@@ -38,8 +38,14 @@ class FlushAppSetupTokensCommand extends Command
      */
     public function handle()
     {
-        AppSetupToken::where('created_at', '<=', now()->subMinutes(10))->delete();
+        AppSetupToken::query()
+            ->from('app_setup_tokens', 't')
+            ->join('apps as a', 't.app_id', 'a.id')
+            ->whereRaw('t.created_at <= DATE_SUB(NOW(),INTERVAL a.token_lifetime MINUTE)')
+            ->delete();
 
         $this->info('App setup tokens flushed successfully.');
+
+        return 0;
     }
 }

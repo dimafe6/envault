@@ -15,7 +15,7 @@ class SetupAppController extends Controller
     public function __invoke(App $app, $token)
     {
         $setupToken = $app->setup_tokens()->where([
-            ['created_at', '>=', now()->subMinutes(10)],
+            ['created_at', '>=', now()->subMinutes($app->token_lifetime)],
             ['token', $token],
         ])->firstOrFail();
 

@@ -2,8 +2,11 @@
 
 namespace App\Http\Livewire\Apps;
 
+use App\Events\Apps\CreatedEvent;
 use App\Models\App;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\View\View;
 use Livewire\Component;
 
 class Create extends Component
@@ -15,22 +18,27 @@ class Create extends Component
      */
     public $name = '';
 
+    public $token_lifetime = 10;
+
     /**
      * @return void
      *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      */
     public function store()
     {
         $this->authorize('create', App::class);
 
-        $app = App::create($this->validate([
-            'name' => ['required'],
-        ]));
+        $app = App::create(
+            $this->validate([
+                'name'           => ['required'],
+                'token_lifetime' => ['required', 'integer', 'min:1']
+            ])
+        );
 
         $this->emit('app.created', $app->id);
 
-        event(new \App\Events\Apps\CreatedEvent($app));
+        event(new CreatedEvent($app));
 
         redirect()->route('apps.show', [
             'app' => $app->id,
@@ -38,7 +46,7 @@ class Create extends Component
     }
 
     /**
-     * @return \Illuminate\View\View
+     * @return View
      */
     public function render()
     {

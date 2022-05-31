@@ -5,6 +5,9 @@ namespace App\Models;
 use App\Observers\AppObserver;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Notifications\Notification;
@@ -22,6 +25,16 @@ class App extends Model
      */
     protected $guarded = [];
 
+    public $fillable = [
+        'name',
+        'token_lifetime',
+        'deleted_at',
+        'slack_notification_webhook_url',
+        'slack_notification_channel',
+        'updated_at',
+        'created_at',
+    ];
+
     /**
      * The "booting" method of the model.
      *
@@ -30,7 +43,7 @@ class App extends Model
     protected static function boot()
     {
         parent::boot();
-        
+
         static::observe(AppObserver::class);
     }
 
@@ -43,7 +56,7 @@ class App extends Model
     }
 
     /**
-     * @param \Illuminate\Notifications\Notification $notification
+     * @param Notification $notification
      * @return string
      */
     public function routeNotificationForSlack(Notification $notification)
@@ -52,7 +65,7 @@ class App extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return BelongsToMany
      */
     public function collaborators()
     {
@@ -64,7 +77,7 @@ class App extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     * @return MorphMany
      */
     public function log()
     {
@@ -72,7 +85,7 @@ class App extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function setup_tokens()
     {
@@ -80,7 +93,7 @@ class App extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function variables()
     {

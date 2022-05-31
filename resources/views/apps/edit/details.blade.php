@@ -16,6 +16,10 @@
             <x-inputs.text label="Name" name="name" maxWidth="max-w-lg" />
         </div>
 
+        <div class="px-4 py-6 sm:px-6">
+            <x-inputs.text label="Token lifetime" name="token_lifetime" maxWidth="max-w-lg" />
+        </div>
+
         <div class="bg-gray-50 px-4 py-4 sm:px-6 flex">
             @can('delete', $app)
                 <div class="inline-flex flex-shrink-0" x-data="{ open: false }" x-cloak>

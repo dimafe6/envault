@@ -21,6 +21,11 @@ class Details extends Component
     public $name = '';
 
     /**
+     * @var int $token_lifetime
+     */
+    public $token_lifetime = 10;
+
+    /**
      * @return void
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
@@ -49,11 +54,13 @@ class Details extends Component
 
         $this->validate([
             'name' => ['required'],
+            'token_lifetime' => ['required', 'integer', 'min:1']
         ]);
 
         $oldName = $this->app->name;
 
         $this->app->name = $this->name;
+        $this->app->token_lifetime = $this->token_lifetime;
 
         $this->app->save();
 
@@ -74,6 +81,7 @@ class Details extends Component
     {
         $this->app = $app;
         $this->name = $app->name;
+        $this->token_lifetime = $app->token_lifetime;
     }
 
     /**
@@ -86,6 +94,7 @@ class Details extends Component
     {
         $this->validateOnly($field, [
             'name' => ['required'],
+            'token_lifetime' => ['required', 'integer', 'min:1']
         ]);
     }
 
