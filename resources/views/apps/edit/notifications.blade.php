@@ -58,7 +58,7 @@
         </div>
         <div class="bg-gray-50 px-4 py-4 sm:px-6 flex">
             <div class="inline-flex flex-shrink-0 items-center">
-                <p class="inline-flex text-sm leading-5 font-medium text-gray-700">
+                <p class="inline-flex text-sm leading-5 font-medium text-{{$this->app->slack_notification_channel ? 'green' : 'gray'}}-600">
                     <x-heroicon-s-information-circle class="mr-1 h-5 w-5" />
                     Slack
                     notifications {{ $this->app->slack_notification_channel && $this->app->slack_notification_webhook_url ? 'enabled.' : 'disabled.' }}

@@ -33,6 +33,7 @@ class App extends Model
         'slack_notification_channel',
         'updated_at',
         'created_at',
+        'webhook_url'
     ];
 
     /**
@@ -52,7 +53,7 @@ class App extends Model
      */
     public function notificationsEnabled()
     {
-        return $this->slack_notification_channel && $this->slack_notification_webhook_url;
+        return ($this->slack_notification_channel && $this->slack_notification_webhook_url) || $this->webhook_url;
     }
 
     /**
@@ -62,6 +63,16 @@ class App extends Model
     public function routeNotificationForSlack(Notification $notification)
     {
         return $this->slack_notification_webhook_url;
+    }
+
+    /**
+     * @param Notification $notification
+     * @return string
+     * @author Dmytro Feshchenko <dimafe2000@gmail.com>
+     */
+    public function routeNotificationForWebhook(Notification $notification)
+    {
+        return $this->webhook_url;
     }
 
     /**

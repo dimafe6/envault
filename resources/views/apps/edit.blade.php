@@ -33,5 +33,9 @@
         <div class="mt-6">
             @livewire('apps.edit.notifications', ['app' => $app])
         </div>
+
+        <div class="mt-6">
+            @livewire('apps.edit.webhook', ['app' => $app])
+        </div>
     </div>
 </div>

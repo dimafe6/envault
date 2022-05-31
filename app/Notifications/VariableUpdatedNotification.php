@@ -7,6 +7,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\SlackMessage;
 use Illuminate\Notifications\Notification;
+use Spatie\WebhookServer\WebhookCall;
 
 class VariableUpdatedNotification extends Notification implements ShouldQueue
 {
@@ -20,7 +21,7 @@ class VariableUpdatedNotification extends Notification implements ShouldQueue
     /**
      * Create a new notification instance.
      *
-     * @param \App\Models\Variable $variable
+     * @param Variable $variable
      * @return void
      */
     public function __construct(Variable $variable)
@@ -36,18 +37,22 @@ class VariableUpdatedNotification extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return ['slack'];
+        return ['slack', WebhookChannel::class];
     }
 
     /**
      * Get the Slack representation of the notification.
      *
      * @param mixed $notifiable
-     * @return \Illuminate\Notifications\Messages\SlackMessage
+     * @return SlackMessage
      */
     public function toSlack($notifiable)
     {
         $channel = $notifiable->slack_notification_channel ? "#{$notifiable->slack_notification_channel}" : '#general';
+
+        if(!$notifiable->slack_notification_channel) {
+            return null;
+        }
 
         return (new SlackMessage())
             ->success()
@@ -55,14 +60,35 @@ class VariableUpdatedNotification extends Notification implements ShouldQueue
             ->to($channel)
             ->content('An environment variable was updated!')
             ->attachment(function ($attachment) use ($notifiable) {
-                $attachment->title($notifiable->name, route('apps.show', [
-                    'app' => $notifiable->id,
-                ]))
+                $attachment->title(
+                    $notifiable->name,
+                    route('apps.show', [
+                        'app' => $notifiable->id,
+                    ])
+                )
                     ->content('Please run `npx envault` to sync your environment!')
                     ->fields([
-                        'Key' => $this->variable->key,
+                        'Key'     => $this->variable->key,
                         'Version' => "v{$this->variable->latest_version->id}",
                     ]);
             });
+    }
+
+    /**
+     * @param $notifiable
+     * @author Dmytro Feshchenko <dimafe2000@gmail.com>
+     */
+    public function toWebhook($notifiable)
+    {
+        if ($url = $notifiable->webhook_url) {
+            WebhookCall::create()
+                ->url($url)
+                ->payload([
+                    'message' => sprintf("An environment variable '%s' was updated!", $this->variable->key ?? '')
+                ])
+                ->meta(['app_id' => $this->variable->app_id])
+                ->doNotSign()
+                ->dispatch();
+        }
     }
 }
