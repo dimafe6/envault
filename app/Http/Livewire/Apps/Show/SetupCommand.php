@@ -6,6 +6,7 @@ use App\Models\App;
 use App\Models\AppSetupToken;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
 use Livewire\Component;
 
 class SetupCommand extends Component
@@ -13,7 +14,7 @@ class SetupCommand extends Component
     use AuthorizesRequests;
 
     /**
-     * @var \App\Models\App
+     * @var App
      */
     public $app;
 
@@ -30,7 +31,7 @@ class SetupCommand extends Component
     ];
 
     /**
-     * @param \App\Models\App $app
+     * @param App $app
      * @return void
      */
     public function mount(App $app)
@@ -45,6 +46,17 @@ class SetupCommand extends Component
      */
     public function generate()
     {
+        $tokenLifetime = $this->app->token_lifetime;
+        $existsToken = $this->app->setup_tokens()->whereRaw(
+            "DATE_ADD(created_at,INTERVAL $tokenLifetime MINUTE) > created_at"
+        )->first();
+
+        if ($existsToken) {
+            $this->token = $existsToken->token;
+
+            return;
+        }
+
         $this->token = Str::random(16);
 
         if (count(AppSetupToken::where('token', $this->token)->get())) {
@@ -62,7 +74,7 @@ class SetupCommand extends Component
     }
 
     /**
-     * @return \Illuminate\View\View
+     * @return View
      */
     public function render()
     {
