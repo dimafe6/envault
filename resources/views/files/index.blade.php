@@ -26,6 +26,10 @@
                         Uploaded date
                     </th>
 
+                    <th class="table-cell px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                        Size
+                    </th>
+
                     <th class="hidden sm:table-cell px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                         Actions
                     </th>
@@ -42,6 +46,10 @@
 
                         <td class="px-6 py-4 text-sm leading-5 text-gray-500">
                             {{ $file->created_at->format('Y-m-d H:i:s') }}
+                        </td>
+
+                        <td class="px-6 py-4 text-sm leading-5 text-gray-500">
+                            {{ $file->human_size }}
                         </td>
 
                         <td class="sm:block px-6 py-4 whitespace-nowrap text-sm leading-5 text-gray-500">
@@ -84,7 +92,7 @@
                     </tr>
                 @endforeach
                 <tr>
-                    <td colspan="3">
+                    <td colspan="4">
                         <div
                                 class="leading-5 font-medium text-sm text-gray-800 truncate"
                                 x-data="{ isUploading: false, progress: 0}"

@@ -19,6 +19,7 @@ class CreateFilesTable extends Migration
             $table->foreignId('app_id')->constrained()->onDelete('cascade');
             $table->string('name');
             $table->char('md5', 32);
+            $table->unsignedBigInteger('size');
             $table->timestamps();
         });
     }

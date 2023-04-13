@@ -54,13 +54,18 @@ class Index extends Component
         } else {
             $uploadedFile->storeAs($this->app->id, $uploadedFile->getClientOriginalName());
 
-            $file = $this->app->files()->create(['name' => $uploadedFile->getClientOriginalName(), 'md5' => $md5]);
+            $file = $this->app->files()->create([
+                'name' => $uploadedFile->getClientOriginalName(),
+                'md5'  => $md5,
+                'size' => $uploadedFile->getSize()
+            ]);
+
+            $this->resetErrorBag();
+            $this->resetValidation();
 
             $this->emit('file.created');
 
             event(new CreatedEvent($this->app, $file));
-
-            $this->resetErrorBag('file');
         }
 
         $uploadedFile->delete();

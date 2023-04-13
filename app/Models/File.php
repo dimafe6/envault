@@ -18,6 +18,9 @@ use Illuminate\Support\Str;
  * @property string $name
  * @property string $updated_at
  * @property string $created_at
+ * @property string $md5
+ * @property int $size
+ * @property string $human_size
  */
 class File extends Model
 {
@@ -29,7 +32,8 @@ class File extends Model
         'name',
         'updated_at',
         'created_at',
-        'md5'
+        'md5',
+        'size'
     ];
 
     protected static function booted(): void
@@ -51,8 +55,21 @@ class File extends Model
         return $this->belongsTo(App::class);
     }
 
+    /**
+     * @return string
+     */
     public function getPathAttribute(): string
     {
         return sprintf('%d/%s', $this->app_id, $this->name);
+    }
+
+    /**
+     * @return string
+     */
+    function getHumanSizeAttribute(): string
+    {
+        $i = floor(log($this->size, 1024));
+
+        return round($this->size / pow(1024, $i), [0, 0, 2, 2, 3][$i]) . ['B', 'KB', 'MB', 'GB', 'TB'][$i];
     }
 }
