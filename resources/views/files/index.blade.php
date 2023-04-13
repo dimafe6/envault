@@ -137,10 +137,9 @@
                 this.value = '';
 
                 document.getElementById('fileLimitError').style.display = 'block';
-
-                return;
+            } else {
+                document.getElementById('fileLimitError').style.display = 'none';
             }
-
         });
     </script>
 @endpush

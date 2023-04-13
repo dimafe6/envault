@@ -59,6 +59,8 @@ class Index extends Component
             $this->emit('file.created');
 
             event(new CreatedEvent($this->app, $file));
+
+            $this->resetErrorBag('file');
         }
 
         $uploadedFile->delete();
