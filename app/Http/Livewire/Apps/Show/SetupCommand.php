@@ -47,9 +47,7 @@ class SetupCommand extends Component
     public function generate()
     {
         $tokenLifetime = $this->app->token_lifetime;
-        $existsToken = $this->app->setup_tokens()->whereRaw(
-            "DATE_ADD(created_at,INTERVAL $tokenLifetime MINUTE) > created_at"
-        )->first();
+        $existsToken = $this->app->existsToken();
 
         if ($existsToken) {
             $this->token = $existsToken->token;

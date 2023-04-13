@@ -104,10 +104,33 @@ class App extends Model
     }
 
     /**
+     * @return AppSetupToken|null
+     */
+    public function existsToken(): ?AppSetupToken
+    {
+        $tokenLifetime = $this->token_lifetime;
+
+        /** @var AppSetupToken $token */
+        $token = $this->setup_tokens()->whereRaw(
+            "DATE_ADD(created_at,INTERVAL $tokenLifetime MINUTE) > created_at"
+        )->first();
+
+        return $token;
+    }
+
+    /**
      * @return HasMany
      */
     public function variables()
     {
         return $this->hasMany(Variable::class);
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function files()
+    {
+        return $this->hasMany(File::class);
     }
 }

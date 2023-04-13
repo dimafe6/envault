@@ -62,6 +62,12 @@ class EventServiceProvider extends ServiceProvider
         \App\Events\Variables\DeletedEvent::class => [
             \App\Listeners\Variables\LogDeletionListener::class,
         ],
+        \App\Events\Files\CreatedEvent::class => [
+            \App\Listeners\Files\LogCreationListener::class,
+        ],
+        \App\Events\Files\DeletedEvent::class => [
+            \App\Listeners\Files\LogDeletionListener::class,
+        ],
         \App\Events\Variables\ImportedEvent::class => [
             \App\Listeners\Variables\LogImportListener::class,
             \App\Listeners\Variables\NotifyOfVariableImportListener::class,

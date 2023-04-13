@@ -34,6 +34,11 @@
             <div class="mt-6">
                 @livewire('variables.create', ['app' => $app])
             </div>
+
+            <div class="mt-6">
+                @livewire('files.index', ['app' => $app])
+            </div>
         @endcan
+
     </div>
 </div>

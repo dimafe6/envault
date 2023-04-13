@@ -20,5 +20,6 @@ Route::get('version', function () {
 
 Route::prefix('v1')->group(function () {
     Route::post('apps/{app}/setup/{token}', 'SetupAppController')->name('apps.setup');
+    Route::get('apps/{app}/download/{token}/file/{uuid}', 'DownloadFileController')->name('apps.download_file');
     Route::post('apps/{app}/update', 'UpdateAppController')->middleware('auth:sanctum')->name('apps.update');
 });

@@ -3,21 +3,23 @@
 namespace App\Http\Livewire\Apps;
 
 use App\Models\App;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\View\View;
 use Livewire\Component;
 
 class Show extends Component
 {
     use AuthorizesRequests;
 
-    /** @var \App\Models\App */
+    /** @var App */
     public $app;
 
     /**
-     * @param \App\Models\App $app
+     * @param App $app
      * @return void
      *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      */
     public function mount(App $app)
     {
@@ -27,7 +29,7 @@ class Show extends Component
     }
 
     /**
-     * @return \Illuminate\View\View
+     * @return View
      */
     public function render()
     {

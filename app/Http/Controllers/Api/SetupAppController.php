@@ -3,29 +3,25 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Traits\CheckTokenTrait;
 use App\Models\App;
 
 class SetupAppController extends Controller
 {
+    use CheckTokenTrait;
+
     /**
-     * @param \App\Models\App $app
+     * @param App $app
      * @param string $token
      * @return array
      */
     public function __invoke(App $app, $token)
     {
-        $setupToken = $app->setup_tokens()->where([
-            ['created_at', '>=', now()->subMinutes($app->token_lifetime)],
-            ['token', $token],
-        ])->firstOrFail();
-
-        if ($setupToken->user->cannot('view', $app)) {
-            abort(403);
-        }
+        $setupToken = $this->checkToken($app, $token);
 
         return [
             'authToken' => $setupToken->user->createToken(uniqid())->plainTextToken,
-            'app' => $setupToken->app->load('variables'),
+            'app'       => $setupToken->app->load(['variables', 'files']),
         ];
     }
 }
