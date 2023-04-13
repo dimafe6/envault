@@ -46,7 +46,6 @@ class SetupCommand extends Component
      */
     public function generate()
     {
-        $tokenLifetime = $this->app->token_lifetime;
         $existsToken = $this->app->existsToken();
 
         if ($existsToken) {

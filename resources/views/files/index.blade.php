@@ -122,7 +122,7 @@
 
                                     <div class="text-center mt-1 text-xs align-middle">
                                         @if ($uploadedFile)
-                                            <p class="text-center mt-1 sm:mx-2 text-xs">{{ $uploadedFile->getClientOriginalName() }}</p>
+                                            <p class="text-center px-3 py-3 text-2xl">{{ $uploadedFile->getClientOriginalName() }}</p>
                                             <button type="submit"
                                                     wire:loading.class="opacity-75 cursor-wait"
                                                     class="inline-flex justify-center rounded-md border border-gray-300 px-4
