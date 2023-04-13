@@ -18,19 +18,19 @@
             <table class="min-w-full">
                 <thead>
                 <tr>
-                    <th class="hidden sm:table-cell px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                    <th class="table-cell px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                         Filename
                     </th>
 
-                    <th class="table-cell px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                    <th class="hidden sm:table-cell px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                         Uploaded date
                     </th>
 
-                    <th class="table-cell px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                    <th class="hidden sm:table-cell px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                         Size
                     </th>
 
-                    <th class="hidden sm:table-cell px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                    <th class="table-cell px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 text-center font-medium text-gray-500 uppercase tracking-wider">
                         Actions
                     </th>
                 </tr>
@@ -38,27 +38,27 @@
 
                 <tbody>
                 @foreach ($files as $file)
-                    <tr class="{{ $loop->odd ? 'bg-white' : 'bg-gray-50' }}" x-data="{ context: null }" x-cloak
+                    <tr x-data="{ context: null }" x-cloak
                         wire:key="file.{{ $file->id }}">
-                        <td class="hidden sm:block px-6 py-4 whitespace-nowrap text-sm leading-5 font-medium text-gray-900">
+                        <td class="sm:table-cell px-6 text-sm leading-5 text-gray-900">
                             {{ $file->name }}
                         </td>
 
-                        <td class="px-6 py-4 text-sm leading-5 text-gray-500">
+                        <td class="hidden sm:table-cell px-6 text-sm leading-5 text-gray-500">
                             {{ $file->created_at->format('Y-m-d H:i:s') }}
                         </td>
 
-                        <td class="px-6 py-4 text-sm leading-5 text-gray-500">
+                        <td class="hidden sm:table-cell px-6  text-sm leading-5 text-gray-500">
                             {{ $file->human_size }}
                         </td>
 
-                        <td class="sm:block px-6 py-4 whitespace-nowrap text-sm leading-5 text-gray-500">
-                            <div class="px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                        <td class="sm:table-cell py-2 whitespace-nowrap text-sm leading-5 text-gray-500">
+                            <div class="px-4 sm:px-6 sm:flex sm:flex-row-reverse">
                                 <span class="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:ml-3 sm:w-auto">
                                     <button @click="context = 'delete'" type="button"
-                                            class="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-red-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-red-500 focus:outline-none focus:border-red-700 focus:shadow-outline-red transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+                                            class="inline-flex justify-center w-full rounded-md border border-transparent px-3 py-2 bg-red-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-red-500 focus:outline-none focus:border-red-700 focus:shadow-outline-red transition ease-in-out duration-150 sm:text-sm sm:leading-5"
                                     >
-                                        <x-heroicon-s-trash class="h-5 w-5"/>
+                                        <x-heroicon-s-trash class="h-4 w-4"/>
                                     </button>
                                 </span>
 
@@ -66,9 +66,9 @@
                                     <a @click="context = null"
                                        href="{{ route('apps.download_file',['app' => $app->id, 'token' => $app->existsToken()->token, 'uuid' => $file->uuid]) }}"
                                        wire:loading.class="opacity-75 cursor-wait"
-                                       class="inline-flex justify-center w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-indigo-300 focus:shadow-outline transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+                                       class="inline-flex justify-center w-full rounded-md border border-gray-300 px-3 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-indigo-300 focus:shadow-outline transition ease-in-out duration-150 sm:text-sm sm:leading-5"
                                     >
-                                        <x-heroicon-s-download class="h-5 w-5"/>
+                                        <x-heroicon-s-download class="h-4 w-4"/>
                                     </a>
                                 </span>
                             </div>
@@ -94,41 +94,62 @@
                 <tr>
                     <td colspan="4">
                         <div
-                                class="leading-5 font-medium text-sm text-gray-800 truncate"
+                                class="leading-5 font-medium text-sm text-gray-800 bg-gray-50 truncate"
                                 x-data="{ isUploading: false, progress: 0}"
                                 x-on:livewire-upload-start="isUploading = true"
                                 x-on:livewire-upload-finish="isUploading = false"
                                 x-on:livewire-upload-error="isUploading = false"
                                 x-on:livewire-upload-progress="progress = $event.detail.progress"
                         >
-                            <span class="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
-                                <button @click="$refs.fileInput.click()" type="button"
-                                        wire:loading.class="opacity-75 cursor-wait"
-                                        class="inline-flex justify-center w-full rounded-md border border-gray-300 px-4
-                                        py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm
-                                        hover:text-gray-500 focus:outline-none focus:border-indigo-300
-                                        focus:shadow-outline transition ease-in-out duration-150 sm:text-sm sm:leading-5"
-                                >
-                                    <x-heroicon-o-upload class="h-5 w-5"/>
-                                </button>
+                            <form wire:submit.prevent="save">
+                                <div class="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto px-4 py-3 sm:px-6 sm:flex justify-center">
+                                    @if (!$uploadedFile)
+                                        <button x-show="!isUploading" @click="$refs.fileInput.click()" type="button"
+                                                wire:loading.class="opacity-75 cursor-wait"
+                                                class="inline-flex justify-center min-w rounded-md border border-gray-300 px-4
+                                            py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm
+                                            hover:text-gray-500 focus:outline-none focus:border-indigo-300
+                                            focus:shadow-outline transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+                                        >
+                                            <x-heroicon-s-upload class="h-5 w-5"/> Select file
+                                        </button>
+                                    @endif
+                                    <input x-ref="fileInput"
+                                           id="my-file-input"
+                                           wire:model="uploadedFile"
+                                           type="file"
+                                           class="hidden"/>
 
-                                <input x-ref="fileInput"
-                                       id="my-file-input"
-                                       wire:model="file"
-                                       type="file"
-                                       class="hidden"/>
-                            </span>
+                                    <div class="text-center mt-1 text-xs align-middle">
+                                        @if ($uploadedFile)
+                                            <p class="text-center mt-1 sm:mx-2 text-xs">{{ $uploadedFile->getClientOriginalName() }}</p>
+                                            <button type="submit"
+                                                    wire:loading.class="opacity-75 cursor-wait"
+                                                    class="inline-flex justify-center rounded-md border border-gray-300 px-4
+                                                        py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm
+                                                        hover:text-gray-500 focus:outline-none focus:border-indigo-300
+                                                        focus:shadow-outline transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+                                            >
+                                                <x-heroicon-s-upload class="h-5 w-5"/> Upload
+                                            </button>
+                                        @endif
+                                    </div>
+                                </div>
 
-                            <!-- Progress Bar -->
-                            <div x-show="isUploading" class="text-center">
-                                <progress max="100" x-bind:value="progress"></progress>
-                            </div>
+                                <div class="bg-gray-50">
+                                    <!-- Progress Bar -->
+                                    <div x-show="isUploading" class="text-center">
+                                        <progress max="100" x-bind:value="progress"></progress>
+                                    </div>
 
-                            @error('file') <p class="text-center mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+                                    @error('uploadedFile') <div x-show="!isUploading" class="text-center text-red-600">{{ $message }}</div> @enderror
 
-                            <p id="fileLimitError" class="text-center mt-1 text-xs text-red-600" style="display: none">
-                                The selected file exceeds the maximum allowed size of 100MB.
-                            </p>
+                                    <div id="fileLimitError" class="text-center text-red-600"
+                                       style="display: none">
+                                        The selected file exceeds the maximum allowed size of 100MB.
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </td>
                 </tr>

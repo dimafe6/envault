@@ -23,54 +23,66 @@ class Index extends Component
     /**
      * @var TemporaryUploadedFile
      */
-    public $file;
+    public $uploadedFile;
 
     public $files = [];
+
+    public $md5 = null;
 
     protected $listeners = [
         'file.created' => '$refresh',
         'file.deleted' => '$refresh',
     ];
 
-    /**
-     * @param TemporaryUploadedFile $uploadedFile
-     * @return void
-     */
-    public function updatedFile(TemporaryUploadedFile $uploadedFile)
+    public function updatedUploadedFile(TemporaryUploadedFile $uploadedFile)
     {
         $this->validate([
-            'file' => 'file|max:102400', // 100MB Max
+            'uploadedFile' => 'file|max:102400', // 100MB Max
         ]);
 
-        $md5 = md5_file($uploadedFile->path());
+        $this->md5 = md5_file($this->uploadedFile->path());
 
         $fileExists = $this->app->files()
-            ->where('name', $uploadedFile->getClientOriginalName())
-            ->where('md5', $md5)
+            ->where('name', $this->uploadedFile->getClientOriginalName())
+            ->where('md5', $this->md5)
             ->exists();
 
         if ($fileExists) {
-            $this->addError('file', 'The same file already uploaded!');
+            $this->addError('uploadedFile', 'The same file already uploaded!');
+            $this->reset('uploadedFile');
         } else {
-            $uploadedFile->storeAs($this->app->id, $uploadedFile->getClientOriginalName());
-
-            $file = $this->app->files()->create([
-                'name' => $uploadedFile->getClientOriginalName(),
-                'md5'  => $md5,
-                'size' => $uploadedFile->getSize()
-            ]);
-
             $this->resetErrorBag();
             $this->resetValidation();
-
-            $this->emit('file.created');
-
-            event(new CreatedEvent($this->app, $file));
         }
+    }
 
-        $uploadedFile->delete();
+    /**
+     * @return void
+     */
+    public function save()
+    {
+        $this->validate([
+            'uploadedFile' => 'file|max:102400', // 100MB Max
+        ]);
 
-        $this->file = null;
+        $this->uploadedFile->storeAs($this->app->id, $this->uploadedFile->getClientOriginalName());
+
+        $file = $this->app->files()->create([
+            'name' => $this->uploadedFile->getClientOriginalName(),
+            'md5'  => $this->md5,
+            'size' => $this->uploadedFile->getSize()
+        ]);
+
+        $this->resetErrorBag();
+        $this->resetValidation();
+
+        $this->emit('file.created');
+
+        event(new CreatedEvent($this->app, $file));
+
+        $this->uploadedFile->delete();
+
+        $this->reset('uploadedFile');
     }
 
     /**
