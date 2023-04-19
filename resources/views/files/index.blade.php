@@ -63,13 +63,14 @@
                                 </span>
 
                                 <span class="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:ml-3 sm:w-auto">
-                                    <a @click="context = null"
-                                       href="{{ route('apps.download_file',['app' => $app->id, 'token' => $app->existsToken()->token, 'uuid' => $file->uuid]) }}"
-                                       wire:loading.class="opacity-75 cursor-wait"
-                                       class="inline-flex justify-center w-full rounded-md border border-gray-300 px-3 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-indigo-300 focus:shadow-outline transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+                                    <button @click="context = null" wire:click="download({{ $app->id }}, '{{ $app->existsToken()->token }}', '{{ $file->uuid }}')"
+                                            type="button"
+                                            wire:loading.class="opacity-75 cursor-wait"
+                                            wire:loading.attr="disabled"
+                                            class="inline-flex justify-center w-full rounded-md border border-gray-300 px-3 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-indigo-300 focus:shadow-outline transition ease-in-out duration-150 sm:text-sm sm:leading-5"
                                     >
                                         <x-heroicon-s-download class="h-4 w-4"/>
-                                    </a>
+                                    </button>
                                 </span>
                             </div>
 
@@ -79,7 +80,7 @@
                                 <div class="fixed inset-0">
                                     <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
                                 </div>
-
+z
                                 <div @click.away="context = null" @keydown.escape.window="context = null"
                                      class="relative z-10 sm:max-w-xl w-full"
                                 >
@@ -122,9 +123,10 @@
 
                                     <div class="text-center mt-1 text-xs align-middle">
                                         @if ($uploadedFile)
-                                            <p class="text-center px-3 py-3 text-2xl">{{ $uploadedFile->getClientOriginalName() }}</p>
+                                            <p wire:loading.remove class="text-center px-3 py-3 text-lg">Ready for upload file: <strong>{{ $uploadedFile->getClientOriginalName() }}</strong></p>
+                                            <p wire:loading wire.target="submit" class="text-center px-3 py-3 text-lg">Uploading...</p>
                                             <button type="submit"
-                                                    wire:loading.class="opacity-75 cursor-wait"
+                                                    wire:loading.class="hidden"
                                                     class="inline-flex justify-center rounded-md border border-gray-300 px-4
                                                         py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm
                                                         hover:text-gray-500 focus:outline-none focus:border-indigo-300

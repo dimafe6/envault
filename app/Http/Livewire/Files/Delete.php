@@ -4,8 +4,11 @@ namespace App\Http\Livewire\Files;
 
 use App\Events\Files\DeletedEvent;
 use App\Models\File;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\View\View;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 
 class Delete extends Component
@@ -23,12 +26,13 @@ class Delete extends Component
     public function destroy()
     {
         $app = $this->file->app;
-        $fileName = $this->file->name;
+
+        Storage::disk('spaces')->delete($this->file->path, $this->file->name);
 
         $this->file->delete();
 
         $this->emit('file.deleted');
-        event(new DeletedEvent($app, $fileName));
+        event(new DeletedEvent($app, $this->file->name));
     }
 
     /**
@@ -41,7 +45,7 @@ class Delete extends Component
     }
 
     /**
-     * @return View
+     * @return Application|Factory|View
      */
     public function render()
     {

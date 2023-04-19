@@ -43,7 +43,9 @@ class File extends Model
         });
 
         static::deleting(function (File $file) {
-            Storage::delete($file->path);
+            if (Storage::disk('spaces')->exists($file->path)) {
+                Storage::disk('spaces')->delete($file->path);
+            }
         });
     }
 

@@ -11,9 +11,24 @@
     <link href="{{ asset('images/favicon.png') }}" rel="icon" type="image/png">
 
     <link href="{{ asset(mix('css/app.css')) }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/load-awesome/1.1.0/ball-clip-rotate-multiple.min.css" integrity="sha512-Q4oL/0ygSqbl4n2fkEMIwR364kOhNB0tUczNxv1S34aMST91VTgQVlQu6gGJDC7dUNi+UovGDcwIrT6cccRnuQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     @livewireStyles
 
     <script src="{{ asset(mix('js/app.js')) }}" defer></script>
+    <script>
+        window.onload = function() {
+            Livewire.hook('message.sent', () => {
+                window.dispatchEvent(
+                    new CustomEvent('loading', { detail: { loading: true }})
+                );
+            })
+            Livewire.hook('message.processed', (message, component) => {
+                window.dispatchEvent(
+                    new CustomEvent('loading', { detail: { loading: false }})
+                );
+            })
+        }
+    </script>
     @livewireScripts
 </head>
 
@@ -150,6 +165,17 @@
 
 <main class="flex-grow -mt-56">
     {{ $slot }}
+
+    <div x-data="{ loading: false }"
+         x-show="loading"
+         @loading.window="loading = $event.detail.loading"
+         class="fixed top-0 left-0 right-0 bottom-0 w-full h-screen z-50 overflow-hidden bg-gray-700 opacity-75 flex flex-col items-center justify-center"
+    >
+        <div class="la-ball-clip-rotate-multiple la-dark la-2x ">
+            <div></div>
+            <div></div>
+        </div>
+    </div>
 </main>
 
 <footer>
