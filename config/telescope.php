@@ -18,6 +18,8 @@ return [
 
     'domain' => env('TELESCOPE_DOMAIN'),
 
+    'admin_emails' => env('TELESCOPE_ADMIN_EMAILS', ''),
+
     /*
     |--------------------------------------------------------------------------
     | Telescope Path
