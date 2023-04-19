@@ -39,7 +39,7 @@ class Index extends Component
     public function render()
     {
         if (auth()->user()->can('viewAll', App::class)) {
-            $apps = App::query();
+            $apps = App::query()->with(['variables']);
         } else {
             $apps = auth()->user()->app_collaborations();
         }
