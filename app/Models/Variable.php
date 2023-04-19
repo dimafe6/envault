@@ -3,10 +3,19 @@
 namespace App\Models;
 
 use App\Observers\VariableObserver;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * Class Variable
+ * @package App\Models
+ * @author  Dmytro Feshchenko <dimafe2000@gmail.com>
+ * @property Collection $versions
+ */
 class Variable extends Model
 {
     use HasFactory;
@@ -19,6 +28,8 @@ class Variable extends Model
      */
     protected $appends = ['latest_version'];
 
+    protected $with = ['versions', 'app'];
+
     /**
      * The "booting" method of the model.
      *
@@ -27,7 +38,7 @@ class Variable extends Model
     protected static function boot()
     {
         parent::boot();
-        
+
         static::observe(VariableObserver::class);
     }
 
@@ -39,15 +50,15 @@ class Variable extends Model
     protected $guarded = ['latest_version'];
 
     /**
-     * @return \App\Models\VariableVersion|null
+     * @return VariableVersion|null
      */
     public function getLatestVersionAttribute()
     {
-        return $this->versions()->latest()->first();
+        return $this->versions->last();
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function versions()
     {
@@ -55,7 +66,7 @@ class Variable extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function app()
     {

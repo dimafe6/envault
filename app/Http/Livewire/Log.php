@@ -103,6 +103,7 @@ class Log extends Component
     public function render()
     {
         $entries = LogEntry::query()
+            ->with(['user'])
             ->whereNotNull('description')
             ->when(Str::contains($this->action, '.'), function ($query) {
                 return $query->where([['action', Str::after($this->action, '.')], ['loggable_type', Str::before($this->action, '.')]]);

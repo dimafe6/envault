@@ -23,6 +23,8 @@ class User extends Authenticatable
      */
     protected $guarded = [];
 
+    protected $with = ['app_collaborations'];
+
     /**
      * The "booting" method of the model.
      *
@@ -57,7 +59,7 @@ class User extends Authenticatable
      */
     public function isAppAdmin(App $app)
     {
-        return $this->app_collaborations()->newPivotStatementForId($app->id)->first()->role ?? null == 'admin' ? true : false;
+        return (bool)($this->app_collaborations->where('id', $app->id)->first()?->pivot->role ?? null == 'admin');
     }
 
     /**
@@ -66,7 +68,7 @@ class User extends Authenticatable
      */
     public function isAppCollaborator(App $app)
     {
-        return (bool) $this->app_collaborations()->newPivotStatementForId($app->id)->first();
+        return $this->app_collaborations->where('id', $app->id)->count() > 0;
     }
 
     /**
@@ -94,7 +96,8 @@ class User extends Authenticatable
             ->withPivot([
                 'role',
             ])
-            ->withTimestamps();
+            ->withTimestamps()
+            ->withCount('variables');
     }
 
     /**

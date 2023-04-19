@@ -23,6 +23,7 @@ class AppFactory extends Factory
     {
         return [
             'name' => $this->faker->company,
+            'token_lifetime' => 10000
         ];
     }
 }

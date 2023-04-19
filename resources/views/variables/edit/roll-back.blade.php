@@ -1,6 +1,7 @@
 <div>
     <ul class="max-h-44 overflow-y-auto text-sm">
-        @foreach ($variable->versions()->orderBy('created_at', 'desc')->get()->whereNotNull('value') as $version)
+
+        @foreach ($variable->versions->sortByDesc('created_at') as $version)
             <div
                 wire:click="selectVersion({{ $version->id }}, '{{ $version->value }}', '{{ $version->created_at->toFormattedDateTimeString() }}')"
                 wire:loading.class="opacity-75 cursor-wait"
