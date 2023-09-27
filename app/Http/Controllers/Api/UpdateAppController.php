@@ -15,6 +15,6 @@ class UpdateAppController extends Controller
     {
         $this->authorize('view', $app);
 
-        return $app->load('variables');
+        return $app->load(['variables', 'files']);
     }
 }
