@@ -74,7 +74,10 @@ class Index extends Component
 
         $fileName = $this->uploadedFile->getClientOriginalName();
 
-        if (!Storage::disk('spaces')->putFileAs($this->app->id, $this->uploadedFile, $fileName)) {
+        if (
+            !Storage::disk(config('filesystems.secure_files_disk'))
+                ->putFileAs($this->app->id, $this->uploadedFile, $fileName)
+        ) {
             $this->addError('uploadedFile', 'Error when uploading file!');
             $this->reset('uploadedFile');
 

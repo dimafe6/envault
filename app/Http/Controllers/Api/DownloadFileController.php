@@ -26,6 +26,6 @@ class DownloadFileController extends Controller
         /** @var File $file */
         $file = $app->files()->where(['uuid' => $uuid])->firstOrFail();
 
-        return Storage::disk('spaces')->download($file->path, $file->name);
+        return Storage::disk(config('filesystems.secure_files_disk'))->download($file->path, $file->name);
     }
 }

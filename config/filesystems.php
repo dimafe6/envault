@@ -15,6 +15,8 @@ return [
 
     'default' => env('FILESYSTEM_DRIVER', 'local'),
 
+    'secure_files_disk' => env('SECURE_FILES_DISK', 'spaces'),
+
     /*
     |--------------------------------------------------------------------------
     | Filesystem Disks

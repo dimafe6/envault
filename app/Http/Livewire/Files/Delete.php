@@ -27,7 +27,7 @@ class Delete extends Component
     {
         $app = $this->file->app;
 
-        Storage::disk('spaces')->delete($this->file->path, $this->file->name);
+        Storage::disk(config('filesystems.secure_files_disk'))->delete($this->file->path, $this->file->name);
 
         $this->file->delete();
 
